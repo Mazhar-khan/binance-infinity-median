@@ -1,113 +1,102 @@
-````markdown
 # Binance Infinity Median Service
 
-This project is a small Node.js + Express service built around Binance trade pairs.  
-It continuously streams live trade prices from Binance and maintains an **“Infinity Median”**  
-for each selected trade pair. The infinity median means: the median price calculated from  
-**all prices received so far** for that pair (not just the last N).
+A lightweight **Node.js + Express** service that streams real-time Binance trade data and calculates a continuous **Infinity Median** for selected trading pairs.
+
+The **Infinity Median** represents the median price derived from **all received trade prices** for a given pair (not just a limited window).  
+This makes it suitable for **real-time analytics, trading insights, and data-driven backends**.
 
 ---
 
-## Features
+## ✨ Features
 
-- **Fetch Trade Pairs**: Selects 10 random trade pairs from Binance.
-- **Stream Prices**: Continuously fetches live trade prices in real time using Binance WebSocket.
-- **Infinity Median**: Maintains a running median for each trade pair.
-- **REST APIs**:
-  - `GET /pairs` → Fetch random pairs and start streaming.
-  - `GET /prices` → Get latest prices for tracked pairs.
-  - `GET /medians` → Get all medians for tracked pairs.
-  - `GET /median/:pair` → Get current median for a specific pair.
-- **WebSocket**:
-  - Subscribe to `/median/:pair` to receive live median updates for that pair.
-- **Efficiency**: Median calculation implemented with a dual-heap approach in **O(log n)** time per update.
+- **Fetch Random Trade Pairs** → Selects 10 random trade pairs from Binance REST API.
+- **Live Price Streaming** → Subscribes to Binance WebSocket stream for continuous price updates.
+- **Infinity Median Calculation** → Maintains a running median per pair using a dual-heap approach (**O(log n)** per update).
+- **REST APIs**
+  - `GET /pairs` → Fetch random pairs & start streaming.
+  - `GET /prices` → Latest price snapshot of tracked pairs.
+  - `GET /medians` → Current median values for all pairs.
+  - `GET /median/:pair` → Current median of a specific pair.
+- **WebSocket Support**
+  - Subscribe to `/median/:pair` → Get **live median updates** for that pair.
+- **Scalable & Efficient** → Designed to handle high-frequency real-time trade streams.
 
 ---
 
-## Getting Started
+## 🚀 Getting Started
 
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/your-username/binance-infinity-median.git
 cd binance-infinity-median
-````
+```
 
 ### 2. Install Dependencies
-
 ```bash
 npm install
 ```
 
-### 3. Environment Setup
-
+### 3. Configure Environment
 Create a `.env` file in the root directory:
 
 ```env
 PORT=3000
 ```
 
-(You can change the port as needed.)
+> Default port is `3000`, but you can change it if required.
 
 ### 4. Run the Service
-
-Start with nodemon (recommended during development):
-
+Start in **development mode** with auto-restart:
 ```bash
 npm run dev
 ```
 
-Or run normally:
-
+Or run in **production mode**:
 ```bash
 node index.js
 ```
 
 ---
 
-## Testing the Service
+## 🧪 Testing the APIs
 
-1. **Fetch Random Pairs**
-   Open in browser or use Postman:
+Once the server is running:
 
-   ```
-   http://localhost:3000/pairs
-   ```
-
-2. **Check Latest Prices**
-
-   ```
-   http://localhost:3000/prices
+1. **Fetch 10 Random Pairs**  
+   ```http
+   GET http://localhost:3000/pairs
    ```
 
-3. **Check All Medians**
-
-   ```
-   http://localhost:3000/medians
-   ```
-
-4. **Check Median for a Specific Pair**
-
-   ```
-   http://localhost:3000/median/BTCUSDT
+2. **Get Latest Prices**  
+   ```http
+   GET http://localhost:3000/prices
    ```
 
-5. **WebSocket Subscription**
+3. **Get All Medians**  
+   ```http
+   GET http://localhost:3000/medians
+   ```
+
+4. **Get Median for a Specific Pair**  
+   ```http
+   GET http://localhost:3000/median/BTCUSDT
+   ```
+
+5. **Subscribe via WebSocket**  
    Connect to:
-
-   ```
+   ```ws
    ws://localhost:3000/median/BTCUSDT
    ```
-
-   You will receive live median updates whenever a new trade price is streamed.
+   → You’ll start receiving **live median updates** in JSON format.
 
 ---
 
-## Notes
+## 📌 Notes
 
-* This service uses the official Binance WebSocket stream:
+- Uses official Binance WebSocket stream:  
   `wss://stream.binance.com:9443/stream`
-* Median is calculated continuously without resetting.
-* The system is efficient enough to handle real-time streams.
+- Medians are **never reset** – they continuously evolve with incoming trades.
+- Built with efficiency in mind: median calculation runs in **O(log n)** time.
+- Ideal for real-time financial systems, trading dashboards, or backtesting tools.
 
-
-
+---
